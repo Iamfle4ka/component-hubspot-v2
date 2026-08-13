@@ -4,6 +4,7 @@ import logging
 from typing import Callable, List, Union
 
 import dateparser
+from dataconf.exceptions import TypeConfigException
 from keboola.component import dao
 from keboola.component.base import ComponentBase, sync_action
 from keboola.component.dao import SupportedDataTypes
@@ -94,6 +95,14 @@ class Component(ComponentBase):
             # as a UserException (exit 1) so the user sees the invalid value and can fix the config.
             raise UserException(f"Invalid configuration value: {e}. Please make sure all configured "
                                 f"values are among the supported options.") from e
+        except TypeConfigException as e:
+            # A configuration section stored with the wrong JSON shape (e.g. "additional_properties"
+            # saved as a list instead of an object) makes dataconf raise TypeConfigException. That does
+            # not inherit from ValueError, so it escaped the handler above and crashed with an opaque
+            # internal error (exit 2). Re-raise as a UserException (exit 1) so the user sees which part
+            # of the configuration is malformed and can fix it.
+            raise UserException(f"Invalid configuration structure: {e}. Please open the component "
+                                f"configuration, review the reported section and save it again.") from e
 
     def _init_client(self):
         self.client = HubspotClient(access_token=self._configuration.pswd_private_app_token,

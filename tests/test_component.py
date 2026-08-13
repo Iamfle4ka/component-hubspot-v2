@@ -73,6 +73,44 @@ class TestComponent(unittest.TestCase):
         self.assertEqual("contact", association.from_object.value)
         self.assertEqual("company", association.to_object.value)
 
+    def test_malformed_configuration_section_raises_user_exception(self):
+        # Regression: a configuration section stored with the wrong JSON shape (here
+        # "additional_properties" saved as a list instead of an object) makes dataconf raise
+        # TypeConfigException, which does not inherit from ValueError and so used to crash with an
+        # opaque internal error (exit 2). It must now be a UserException (exit 1) whose message
+        # points at the offending section.
+        parameters = {
+            "#private_app_token": "secret",
+            "endpoints": {"contact": True},
+            "additional_properties": [],
+            "associations": [],
+            "fetch_settings": {},
+            "destination_settings": {},
+        }
+        with mock.patch.dict(os.environ, {'KBC_DATADIR': _make_datadir(parameters)}):
+            comp = Component()
+            with self.assertRaises(UserException) as ctx:
+                comp._init_configuration()
+        self.assertIn("additional_properties", str(ctx.exception))
+
+    def test_valid_additional_properties_object_loads_unchanged(self):
+        # Happy path: a correctly shaped "additional_properties" object must still load successfully
+        # and keep its parsed values (no behaviour change introduced by the TypeConfigException handling).
+        parameters = {
+            "#private_app_token": "secret",
+            "endpoints": {"contact": True},
+            "additional_properties": {"contact_properties": ["email"], "fetch_property_history": True},
+            "associations": [],
+            "fetch_settings": {},
+            "destination_settings": {},
+        }
+        with mock.patch.dict(os.environ, {'KBC_DATADIR': _make_datadir(parameters)}):
+            comp = Component()
+            comp._init_configuration()
+        additional_properties = comp._configuration.additional_properties
+        self.assertEqual(["email"], additional_properties.contact_properties)
+        self.assertTrue(additional_properties.fetch_property_history)
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
