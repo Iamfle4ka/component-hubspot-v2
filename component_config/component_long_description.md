@@ -1,1 +1,5 @@
-This component uses the HubSpot API to extract data of the CRM objects from Hubspot
+Loads HubSpot CRM and marketing data into Storage: companies, contacts, deals, line items, products, quotes, tickets, owners, pipelines, contact lists, forms, campaigns, email events, marketing email statistics, and engagements (calls, emails, notes, meetings, tasks). For each CRM object you choose all properties, the base set, or your own list, and you can add associations between objects. Custom objects are supported too.
+
+Full fetch reads all records on every run and is the only mode that can include archived objects. Incremental fetch reads records from a date you set (exact, relative such as `5 days ago`, or `last run`) through HubSpot's [search API](https://developers.hubspot.com/docs/api/crm/search), which returns at most 10,000 results per search. Loading into Storage is incremental by default: tables with a primary key get their rows updated, tables without one get rows appended. Full load overwrites the table instead.
+
+What you need before you start is in the [component's README](https://github.com/keboola/component-hubspot-v2#prerequisites).

@@ -10,30 +10,31 @@ This component uses the HubSpot API to extract data of the CRM and Marketing obj
 
 ## Prerequisites
 
-You need to create
-a [Private App](https://developers.hubspot.com/docs/api/migrate-an-api-key-integration-to-a-private-app)
-in your account and enable all following scopes:
-
-* crm.lists.read
-* crm.objects.companies.read
-* crm.objects.contacts.read
-* crm.objects.deals.read
-* crm.objects.line_items.read
-* crm.objects.marketing_events.read
-* crm.objects.owners.read
-* crm.objects.quotes.read
-* crm.schemas.contacts.read
-* crm.schemas.companies.read
-* crm.schemas.custom.read
-* crm.schemas.deals.read
-* crm.schemas.line_items.read
-* crm.schemas.quotes.read
-* e-commerce
-* tickets
-* timeline
-* forms
-* content
-* sales-email-read
+- Account and plan: A HubSpot account. Custom objects need an Enterprise licence.
+- Access: A private app token from your HubSpot account.
+- Permissions: The private app needs these 20 scopes:
+    * crm.lists.read
+    * crm.objects.companies.read
+    * crm.objects.contacts.read
+    * crm.objects.deals.read
+    * crm.objects.line_items.read
+    * crm.objects.marketing_events.read
+    * crm.objects.owners.read
+    * crm.objects.quotes.read
+    * crm.schemas.contacts.read
+    * crm.schemas.companies.read
+    * crm.schemas.custom.read
+    * crm.schemas.deals.read
+    * crm.schemas.line_items.read
+    * crm.schemas.quotes.read
+    * e-commerce
+    * tickets
+    * timeline
+    * forms
+    * content
+    * sales-email-read
+- Network: No network setup needed.
+- Set up first: Create a [private app](https://developers.hubspot.com/docs/api/migrate-an-api-key-integration-to-a-private-app) in your HubSpot account and enable the scopes above.
 
 ## Supported Endpoints
 
